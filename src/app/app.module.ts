@@ -3,10 +3,12 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { DateCellComponent } from './components/date-cell/date-cell.component';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, CommonModule],
+  declarations: [AppComponent, DateCellComponent],
+  imports: [BrowserModule, CommonModule, SweetAlert2Module.forRoot()],
   providers: [],
   bootstrap: [AppComponent],
 })

@@ -1,19 +1,9 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import * as range from 'lodash.range';
-import { MeetingsService } from './services/meetings.service';
-
-export interface CalendarDate {
-  mDate: moment.Moment;
-  selected?: boolean;
-  today?: boolean;
-}
+import { MeetingsService } from './shared/services/meetings.service';
+import { DAYS_OF_WEEK_NAMES } from './shared/constants/constants';
+import { IGroupedMeetingsData, CalendarDate } from './shared/models/models';
 
 @Component({
   selector: 'app-root',
@@ -21,30 +11,15 @@ export interface CalendarDate {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  public meetingsData;
+  public meetingsData: IGroupedMeetingsData;
   public currentDate: moment.Moment;
-  public namesOfDays = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ];
+  public selectedDate: string;
+  public namesOfDays = DAYS_OF_WEEK_NAMES;
   public weeks: Array<CalendarDate[]> = [];
 
-  public selectedDate;
-  public show: boolean;
+  constructor(public meetingsService: MeetingsService) {}
 
-  @ViewChild('calendar', { static: true }) calendar;
-
-  constructor(
-    private eRef: ElementRef,
-    public meetingsService: MeetingsService
-  ) {}
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.meetingsService
       .getMeetingsData()
       .subscribe((data) => (this.meetingsData = data));
@@ -62,10 +37,17 @@ export class AppComponent implements OnInit {
     this.weeks = weeks;
   }
 
-  private fillDates(currentMoment: moment.Moment) {
+  private fillDates(currentMoment: moment.Moment): CalendarDate[] {
+    // Get the day which the calendar grid will start with and the day which it will end with.
     const firstOfMonth = moment(currentMoment).startOf('month').day();
     const lastOfMonth = moment(currentMoment).endOf('month').day();
 
+    /*
+    FirstDayOfGrid gets the first day of a month and subtracts its index.
+    For example, if the first day of a month will start on Tuesday, the index will be equal to 2.
+    And when we subtract from the first day that index we will get Sunday (our week starts from Sunday).
+    LastDayOfGrid gets last Sunday of the grid and adds 7 days to find the last day of the grid, that means Saturday.
+    */
     const firstDayOfGrid = moment(currentMoment)
       .startOf('month')
       .subtract(firstOfMonth, 'days');
@@ -74,8 +56,12 @@ export class AppComponent implements OnInit {
       .subtract(lastOfMonth, 'days')
       .add(7, 'days');
 
+    // a numerical value of the first day of the grid.
     const startCalendar = firstDayOfGrid.date();
 
+    // We create a dynamic range from the index of first day to a number that contains
+    // an amount of all days in the grid + index of first day.
+    // For example, if firstDayOfGrid is 29 Sep and lastDayOfGrid is 2 Nov, we’ll get range(29, 29 + 35)
     return range(
       startCalendar,
       startCalendar + lastDayOfGrid.diff(firstDayOfGrid, 'days')
@@ -105,21 +91,5 @@ export class AppComponent implements OnInit {
 
   private isSelected(date: moment.Moment): boolean {
     return this.selectedDate === moment(date).format('DD/MM/YYYY');
-  }
-
-  // TODO optimize and fix if logic
-  public getMeetingsForDay(date: moment.Moment) {
-    const meetingsForDay = [];
-    this.meetingsData.meetings.forEach((meeting) => {
-      if (moment(meeting.start).date() === moment(date).date()) {
-        meetingsForDay.push({
-          start: moment(meeting.start).format('HH:mm'),
-          end: moment(meeting.end).format('HH:mm'),
-          name: meeting.name,
-          room: meeting.meetingRoom,
-        });
-      }
-    });
-    return meetingsForDay;
   }
 }

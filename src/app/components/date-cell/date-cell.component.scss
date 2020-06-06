@@ -1,0 +1,26 @@
+:host {
+  width: 14.29%;
+
+  .date {
+    height: 150px;
+    border: 1px solid black;
+    position: relative;
+    margin: 2px;
+    border-radius: 5px;
+    text-align: center;
+    padding: 3px;
+    &:hover {
+      cursor: pointer;
+    }
+    &.today {
+      font-weight: bold;
+      border: 2px solid red;
+    }
+  }
+  .meetings {
+    font-size: 12px;
+    font-family: OpenSans, sans-serif;
+    overflow-y: hidden;
+    height: 100%;
+  }
+}

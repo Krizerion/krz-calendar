@@ -23,23 +23,10 @@
       <div class="calendar__weeks">
         <div class="calendar__week" *ngFor="let week of weeks">
           <ng-container *ngFor="let day of week">
-            <div class="calendar__date" [ngClass]="{ today: day.today }">
-              <div class="calendar__meetings">
-                <span>{{ day.mDate.date() }}</span>
-                <div
-                  *ngFor="let meeting of getMeetingsForDay(day.mDate)"
-                  class="calendar__meeting"
-                >
-                  <span
-                    >{{ meeting.start }} - {{ meeting.end }} in
-                    {{ meeting.room }}</span
-                  >
-                  <br />
-                  <span>{{ meeting.name }}</span>
-                  <hr />
-                </div>
-              </div>
-            </div>
+            <app-date-cell
+              [meetingsData]="meetingsData"
+              [day]="day"
+            ></app-date-cell>
           </ng-container>
         </div>
       </div>

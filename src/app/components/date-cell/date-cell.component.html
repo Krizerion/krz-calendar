@@ -1,0 +1,15 @@
+<div
+  class="date"
+  [ngClass]="{ today: day.today }"
+  (click)="openMeetingsModal(day.mDate)"
+>
+  <div class="meetings">
+    <span>{{ day.mDate.date() }}</span>
+    <div *ngFor="let meeting of getMeetings(day.mDate)">
+      <span>{{ meeting.start }} - {{ meeting.end }} in {{ meeting.room }}</span>
+      <br />
+      <span>{{ meeting.name }}</span>
+      <hr />
+    </div>
+  </div>
+</div>

@@ -1,6 +1,5 @@
 .content {
   width: 100vw;
-  height: 100vh;
   display: flex;
   justify-content: center;
   > div {
@@ -77,33 +76,10 @@
       display: flex;
       flex-direction: row;
     }
-    &__date,
     &__day-name {
       text-align: center;
       padding: 3px;
       width: 14.29%;
-    }
-    &__date {
-      height: 200px;
-      border: 1px solid black;
-      position: relative;
-      margin: 2px;
-      border-radius: 5px;
-      &:hover {
-        cursor: pointer;
-      }
-      &.today {
-        font-weight: bold;
-        border: 1px solid red;
-      }
-    }
-    &__meetings {
-      font-size: 12px;
-      font-family: OpenSans, sans-serif;
-      overflow-y: scroll;
-      height: 100%;
-    }
-    &__meeting {
     }
   }
 }
